@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102f24">
+  <meta name="description" content="Pick a spot at a Montréal indoor soccer club. A student prototype for pickup games, field rentals and matchday gatherings.">
+  <title>Title — Indoor soccer in Montréal</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="data.js"></script>
+  <script defer src="pitch.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <svg class="icon-bank" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-ball" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="m16 9 6.5 4.7-2.5 7.6h-8l-2.5-7.6ZM12 2.4l4 3.2 4-3.2M2.3 11l4.2 1.2.7-4.5m22.5 3.3-4.2 1.2-.7-4.5M5.6 24.6l.8-4.4 3.7 2.5m16.3 1.9-.8-4.4-3.7 2.5M12.4 29.4l3.6-3.3 3.6 3.3"/><path d="m16 4.4 0 5m-10 2.2 4.7 2.6m14.9-2.6-4.4 2.5m-11.9 9.2 3.1-3.3m10.3 3.3-3.1-3.3m-3.6 6.7v2.7" fill="none" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 6h18v4a2 2 0 0 0 0 4v4H3v-4a2 2 0 0 0 0-4V6Zm12 0v2m0 2v2m0 2v2m0 1v1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 6.8v5.6l3.5 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-7.4 7-12a7 7 0 1 0-14 0c0 4.6 7 12 7 12Z"/><circle cx="12" cy="9.2" r="2.3"/></symbol>
+    <symbol id="i-field" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="1"/><path d="M12 5v14M2 9h3v6H2m20-6h-3v6h3"/><circle cx="12" cy="12" r="2.7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#play">Skip to games</a>
+  <header class="site-header" id="top">
+    <div class="nav-inner wrap">
+      <a class="brand" href="#top" aria-label="Title home"><span class="brand-crest"><svg aria-hidden="true"><use href="#i-ball"/></svg></span><span data-brand>Title</span></a>
+      <nav id="main-nav" class="main-nav" aria-label="Main navigation">
+        <a href="#play" data-nav="play">Play</a><a href="#events">What’s on</a><a href="#shop">Club shop</a><a href="#space">The space</a>
+      </nav>
+      <div class="header-tools">
+        <button class="tickets-link" id="my-tickets"><svg class="icon"><use href="#i-ticket"/></svg>My tickets<span id="ticket-count" hidden></span></button>
+        <button id="menu-toggle" class="icon-button menu-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Open navigation"><svg class="icon"><use href="#i-menu"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-img" src="assets/indoor-pickup.webp" alt="A pickup player controls the ball under the warehouse lights." fetchpriority="high">
+      <div class="hero-shade"></div>
+      <div class="hero-inner wrap">
+        <div class="hero-copy">
+          <p class="hero-location"><svg class="icon"><use href="#i-pin"/></svg> Montréal, Québec <span>/</span> Indoor soccer</p>
+          <h1 id="hero-title"><span>Come solo.</span><span>Leave with</span><em>a team.</em></h1>
+          <p class="hero-deck">Five-a-side pickup, vintage kits and matchdays together. There’s a place for you on this pitch.</p>
+          <div class="hero-actions"><a class="button primary" href="#play" data-mode="pickup">Find a game</a><a class="button hero-secondary" href="#play" data-mode="field">Book a field</a></div>
+        </div>
+        <button class="feature-pass" id="feature-pass" aria-label="Open the lineup for Sunday Pickup">
+          <span class="pass-date"><small>NOV</small><strong>29</strong></span>
+          <span class="pass-main"><small>Featured game</small><b>Sunday Pickup</b><span>14:00 · View lineup</span></span>
+          <svg class="icon"><use href="#i-field"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="section schedule wrap" id="play" aria-labelledby="schedule-title">
+      <div class="section-heading schedule-heading">
+        <div><p class="eyebrow"><span id="week-label">Nov 23–29, 2026</span> <span class="slash">/</span> Montréal time</p><h2 id="schedule-title">This week on the pitch.</h2></div>
+        <div class="mode-switch" aria-label="Booking type"><button data-mode="pickup" aria-pressed="true">Open play</button><button data-mode="field" aria-pressed="false">Full field</button></div>
+      </div>
+      <div class="day-bar" id="days" role="group" aria-label="Filter sessions by day"></div>
+      <div id="session-grid" class="session-grid"></div>
+      <p class="sr-only" id="schedule-status" role="status"></p>
+      <noscript><p>Enable JavaScript to explore the lineup and book a demo ticket.</p></noscript>
+    </section>
+
+    <section class="events-section" id="events" aria-labelledby="events-title">
+      <div class="section wrap">
+        <div class="section-heading"><div><p class="eyebrow">Community calendar</p><h2 id="events-title">What’s on at the club.</h2></div></div>
+        <div class="event-grid">
+          <article class="event-card screening-card">
+            <img loading="lazy" src="assets/clubhouse.webp" alt="Friends in the clubhouse café watch a soccer match on a projected screen.">
+            <div class="event-copy"><p class="eyebrow">Sat, Nov 28 <span>/</span> Screening room</p><h3>Matchday watch party</h3><button class="text-button light" data-event="screening">Event details</button></div>
+          </article>
+          <article class="event-card cup-card">
+            <div class="cup-graphic" aria-hidden="true"><div class="cup-outline"></div><div class="cup-outline"></div><div class="cup-outline"></div></div>
+            <div class="event-copy"><p class="eyebrow">Sun, Nov 29 <span>/</span> Pitch 01</p><h3>Community Cup</h3><p>A five-a-side fundraiser for youth equipment.</p><button class="text-button" data-event="cup">Event details</button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="shop" aria-labelledby="shop-title">
+      <div class="section-heading"><div><p class="eyebrow">Club shop</p><h2 id="shop-title">On the rail.</h2></div><p class="section-note">Retro shirts and matchday essentials, right by the pitch.</p></div>
+      <div id="shop-grid" class="shop-grid"></div>
+    </section>
+
+    <section id="space" class="space-section" aria-labelledby="space-title">
+      <div class="section wrap space-layout">
+        <div class="space-copy"><p class="eyebrow">The space</p><h2 id="space-title">Inside <span data-brand>Title</span>.</h2><p>From the touchline to the coffee counter, everything shares one roof. Select a room to explore the concept floor plan.</p><div id="room-description" aria-live="polite"></div></div>
+        <div class="plan-paper">
+          <div class="plan-top"><span>Club floor plan</span><span>Concept · not to scale</span></div>
+          <div class="floor-plan" role="group" aria-label="Explore the four rooms">
+            <button class="room room-pitch" data-room="pitch" aria-pressed="true"><span class="plan-pitch-lines" aria-hidden="true"></span><b>Pitch 01</b></button>
+            <button class="room room-shop" data-room="shop" aria-pressed="false">Club shop</button>
+            <button class="room room-cafe" data-room="cafe" aria-pressed="false">Café</button>
+            <button class="room room-screen" data-room="screen" aria-pressed="false">Screening room</button>
+          </div>
+          <div class="plan-bottom"><span class="entrance-line"></span>Entrance</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap footer-inner"><a class="brand" href="#top"><span class="brand-crest"><svg aria-hidden="true"><use href="#i-ball"/></svg></span><span data-brand>Title</span></a><p>Montréal, Québec · FFAR 256 student prototype<br>Sample sessions, prices and events. All bookings are simulations.</p><a class="footer-top" href="#top">Back to top</a></div></footer>
+
+  <dialog id="booking-dialog" class="booking-dialog" aria-labelledby="booking-title">
+    <div id="booking-frame" class="booking-frame">
+      <header class="booking-head"><div><p class="eyebrow" id="book-kicker"></p><h2 id="booking-title" tabindex="-1">Pick your spot.</h2></div><button class="icon-button dark-close" id="close-booking" aria-label="Close booking"><svg class="icon"><use href="#i-close"/></svg></button></header>
+      <div id="booking-scroll" class="booking-scroll">
+        <div class="booking-grid">
+          <div class="arena-block">
+            <div class="arena-top"><span><svg class="icon"><use href="#i-field"/></svg> Pitch 01</span><span id="board-score" role="status"></span></div>
+            <div class="field-scene" id="field-scene" role="group" aria-label="Interactive five-a-side field">
+              <canvas id="field-canvas" aria-hidden="true"></canvas>
+              <div id="players"></div>
+              <div class="rolling-ball" id="rolling-ball" aria-hidden="true"><svg><use href="#i-ball"/></svg></div>
+            </div>
+            <div class="arena-bottom" id="arena-bottom"></div>
+          </div>
+          <aside class="booking-summary" aria-labelledby="summary-name">
+            <p class="eyebrow" id="summary-type"></p><h3 id="summary-name"></h3>
+            <dl class="facts" id="summary-facts"></dl>
+            <div id="pick-detail" class="pick-detail" aria-live="polite"></div>
+            <div id="name-field"><label for="booking-name">Name on ticket <span>(optional)</span></label><input id="booking-name" type="text" maxlength="18" placeholder="You" autocomplete="off"></div>
+          </aside>
+        </div>
+      </div>
+      <div class="book-foot"><div><span id="foot-selection"></span><small>Demo booking · No payment</small></div><button class="button primary" id="confirm-booking" disabled>Confirm my spot</button></div>
+    </div>
+    <div id="ticket-frame" class="ticket-frame" hidden></div>
+  </dialog>
+
+  <dialog id="info-dialog" class="info-dialog" aria-labelledby="info-title">
+    <div class="info-wrap"><button class="icon-button info-close" id="close-info" aria-label="Close details"><svg class="icon"><use href="#i-close"/></svg></button><div id="info-content"></div></div>
+  </dialog>
+  <div class="sr-only" id="notice" role="status" aria-live="polite"></div>
+</body>
+</html>
