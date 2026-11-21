@@ -337,7 +337,7 @@
           <div><dt>${rental ? 'Capacity' : 'Starting position'}</dt><dd>${rental ? '10 players' : position.name}</dd></div></dl>
         <div class="ticket-stub"><div><small class="stub-small">${ticket.code} · Demo ticket</small></div><div class="barcode" aria-hidden="true"></div></div>
       </article><div class="ticket-actions"><button id="back-lineup" class="button primary">${rental ? 'View field' : 'View lineup'}</button><button id="back-schedule" class="button secondary">Back to schedule</button></div>
-      <p class="ticket-note">${canSave ? 'Saved in My tickets in this browser.' : 'Available in My tickets while this page is open.'} Demo booking · No payment.</p>`;
+      <p class="ticket-note">${canSave ? 'Saved in My tickets in this browser.' : 'Available in My tickets while this page is open.'} </p>`;
     booking.setAttribute('aria-labelledby','ticket-heading');
     $('close-ticket').addEventListener('click',closeBooking);
     $('back-lineup').addEventListener('click',() => {view.inspected=null;showLineup();});
