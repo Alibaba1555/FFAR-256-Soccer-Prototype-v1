@@ -6,7 +6,7 @@ window.ClubData = {
   week: ['2026-11-23','2026-11-24','2026-11-25','2026-11-26','2026-11-27','2026-11-28','2026-11-29'],
   featured: 'sun-pickup',
   sessions: [
-    { id: 'tue-afterwork', mode: 'pickup', title: 'After-work pickup', date: '2026-11-24', start: '18:00', end: '19:00', level: 'All levels', ages: '16+', fee: 12,
+    { id: 'tue-afterwork', mode: 'pickup', title: 'After-work pickup', date: '2026-11-24', start: '18:00', end: '19:00', level: 'All levels', ages: '16–18', fee: 12,
       players: ['Sam',null,'Kai','Maya',null,null,'Cam','Léo',null,'Jules'] },
     { id: 'thu-lights', mode: 'pickup', title: 'Under the lights', date: '2026-11-26', start: '19:30', end: '20:30', level: 'Intermediate', ages: '18+', fee: 14,
       players: ['Rae','Tom',null,'Ari','Noa','Julien',null,'Remy','Ali','Eli'] },

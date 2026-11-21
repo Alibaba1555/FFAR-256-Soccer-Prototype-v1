@@ -8,7 +8,7 @@
   const storageKey = 'ffar256.title.bookings.v1';
   const booking = $('booking-dialog');
   const info = $('info-dialog');
-  const view = {mode: 'pickup', day: 'all', session: null, spot: null, inspected: null, page: 'lineup', info: null};
+  const view = {mode: 'pickup', session: null, spot: null, inspected: null, page: 'lineup', info: null};
   const shortDate = new Intl.DateTimeFormat('en-CA', {weekday:'short', month:'short', day:'numeric', timeZone:'UTC'});
   const weekday = new Intl.DateTimeFormat('en-CA', {weekday:'short', timeZone:'UTC'});
   const dayDate = day => new Date(day+'T12:00:00Z');
@@ -82,12 +82,20 @@
     return count ? `${count} ${count === 1 ? 'spot' : 'spots'} left` : 'Full lineup';
   }
 
-  function renderDays() {
-    const buttons = [{key:'all', label:'All days'}, ...week.map(date => ({
-      key:date, label:`${dayText(date)} ${Number(date.slice(-2))}`
-    }))];
-    $('days').innerHTML = buttons.map(d => `<button data-day="${d.key}" aria-pressed="${view.day === d.key}">${d.label}</button>`).join('');
+  const filters = $('filters');
+  const dateFilter = $('game-date'), timeFilter = $('game-time');
+  const ageFilter = $('game-age'), levelFilter = $('game-level');
+  const pickup = sessions.filter(s => s.mode === 'pickup');
+  for (const [control, key] of [[ageFilter, 'ages'], [levelFilter, 'level']]) {
+    const values = [...new Set(pickup.map(s => s[key]))];
+    if (key === 'ages') values.sort((a,b) => parseInt(a)-parseInt(b));
+    for (const value of values) {
+      if (value !== 'All levels') control.add(new Option(value, value));
+    }
   }
+  filters.addEventListener('input', renderCards);
+  filters.addEventListener('submit', e => e.preventDefault());
+  filters.addEventListener('reset', () => requestAnimationFrame(renderCards));
 
   const miniObserver = new ResizeObserver(entries => {
     for (const {target} of entries) {
@@ -104,7 +112,10 @@
 
   function renderCards() {
     miniObserver.disconnect();
-    const matches = sessions.filter(s => s.mode === view.mode && (view.day === 'all' || s.date === view.day));
+    const matches = sessions.filter(s => s.mode === view.mode && (!dateFilter.value || s.date === dateFilter.value)
+      && (!timeFilter.value || s.start >= timeFilter.value)
+      && (view.mode === 'field' || ((!ageFilter.value || s.ages === ageFilter.value)
+        && (!levelFilter.value || s.level === 'All levels' || s.level === levelFilter.value))));
     const colours = ['#244b38','#364f40','#475337','#1b4a39'];
     $('session-grid').innerHTML = matches.map(s => {
       const field = s.mode === 'field';
@@ -120,8 +131,8 @@
         </div></article>`;
     }).join('');
     if (!matches.length) {
-      $('session-grid').innerHTML = `<p class="empty-schedule">No ${view.mode === 'pickup' ? 'pickup sessions' : 'field rentals'} on ${dateText(view.day)}. <button class="text-button" id="show-week">Show all days</button></p>`;
-      $('show-week').addEventListener('click', () => changeDay('all', true));
+      $('session-grid').innerHTML = `<p class="empty-schedule">No ${view.mode === 'pickup' ? 'pickup sessions' : 'field rentals'} match these filters. <button class="text-button" id="show-week">Clear filters</button></p>`;
+      $('show-week').addEventListener('click', () => { filters.reset(); dateFilter.focus(); });
     }
     $('session-grid').querySelectorAll('canvas').forEach(c => {
       renderMini(c, sessionById.get(c.dataset.preview));
@@ -130,18 +141,11 @@
     $('schedule-status').textContent = `${matches.length} ${view.mode === 'pickup' ? 'open-play sessions' : 'field rentals'} shown.`;
   }
 
-  function changeDay(day, focusFilter = false) {
-    view.day = day;
-    // Keep the active filter button in the document when it has keyboard focus.
-    $('days').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.day === day)));
-    renderCards();
-    if (focusFilter) $('days').querySelector(`[data-day="${day}"]`).focus();
-  }
-
   function changeMode(mode) {
     view.mode = mode;
     document.querySelectorAll('.mode-switch button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
-    changeDay('all');
+    ageFilter.parentElement.hidden = levelFilter.parentElement.hidden = mode === 'field';
+    renderCards();
   }
 
   function closeNav() {
@@ -216,7 +220,6 @@
     booking.setAttribute('aria-labelledby','booking-title');
     const s = view.session;
     const rental = s.mode === 'field';
-    $('book-kicker').textContent = `Match centre / ${rental ? 'Full field' : 'Open play'}`;
     $('booking-title').textContent = rental ? 'Book the pitch.' : 'Pick your spot.';
     $('summary-type').textContent = rental ? 'Private field rental' : 'Five-a-side pickup';
     $('summary-name').textContent = s.title;
@@ -240,8 +243,8 @@
     const detail = $('pick-detail');
     const confirm = $('confirm-booking');
     $('board-score').textContent = ticket ? (rental ? 'Field reserved' : `You’re in · ${availability(s)}`) : availability(s);
-    $('arena-bottom').innerHTML = rental ? '<span>Private rental · Both goals included</span>' :
-      `<span class="team-key"><i class="green"></i>Green<i class="cream"></i>Cream</span>${!ticket && openSpots(s) ? '<button class="any-spot" id="any-spot">Any open spot</button>' : '<span>5-a-side</span>'}`;
+    $('arena-bottom').innerHTML = rental ? '<span>Private rental · 10 players</span>' :
+      `<span class="team-legend"><strong>Team colours</strong><span class="team-key"><i class="green"></i>Green team <i class="cream"></i>Cream team</span></span>${!ticket && openSpots(s) ? '<button class="any-spot" id="any-spot">Any open spot</button>' : '<span>5-a-side</span>'}`;
     if ($('any-spot')) $('any-spot').addEventListener('click', () => {
       // Keep repeated taps useful by moving to the next available shirt.
       const available = spots.map((_, i) => i).filter(i => !s.players[i]);
@@ -253,15 +256,15 @@
     if (ticket) {
       detail.innerHTML = `<b>${rental ? 'Your group has the field.' : 'You’re on the lineup.'}</b><p>${rental ? 'Both teams share this rental window.' : `${chosen.team} team · ${chosen.name}`}</p>`;
     } else if (rental) {
-      detail.innerHTML = '<b>One pitch for your group.</b><p>This price covers the entire hour. Bring up to 10 players for five-a-side.</p>';
+      detail.innerHTML = '<b>One pitch for your group.</b><p>Up to 10 players · 60 minutes</p>';
     } else if (full) {
-      detail.innerHTML = '<b>This session is full.</b><p>Check the weekly schedule for another game.</p>';
+      detail.innerHTML = '<b>This session is full.</b>';
     } else if (inspected && s.players[view.inspected]) {
-      detail.innerHTML = `<b>${escapeText(s.players[view.inspected])} · Spot taken</b><p>${inspected.team} team · ${inspected.name}. Choose a shirt marked + to join.</p>`;
+      detail.innerHTML = `<b>${escapeText(s.players[view.inspected])} · Spot taken</b><p>${inspected.team} team · ${inspected.name}. </p>`;
     } else if (chosen) {
-      detail.innerHTML = `<b>${chosen.team} team · ${chosen.name}</b><p>This is a starting position. You can switch during the game.</p>`;
+      detail.innerHTML = `<b>${chosen.team} team · ${chosen.name}</b>`;
     } else {
-      detail.innerHTML = '<b>Choose a shirt marked +.</b><p>Joining solo? Pick either team or use “Any open spot”.</p>';
+      detail.innerHTML = '<b>Choose a shirt marked +.</b>';
     }
     confirm.disabled = !ticket && !rental && !chosen;
     confirm.textContent = ticket ? 'View my ticket' : rental ? `Reserve field · $${s.fee}` : `Confirm spot · $${s.fee}`;
@@ -274,7 +277,7 @@
     if (!s || s.mode !== 'pickup' || tickets[s.id]) return;
     view.inspected = i;
     view.spot = s.players[i] ? null : i;
-    lineup.update(view.spot,null);
+    lineup.update(view.spot,null,true,i);
     updateBooking();
     if (refocusAny) focusWithoutScroll($('any-spot'));
   }
@@ -332,7 +335,7 @@
         <dl class="ticket-grid"><div><dt>Booked for</dt><dd>${escapeText(ticket.name)}</dd></div><div><dt>Pitch</dt><dd>Indoor 01</dd></div>
           <div><dt>${rental ? 'Access' : 'Team'}</dt><dd>${rental ? 'Private rental' : position.team}</dd></div>
           <div><dt>${rental ? 'Capacity' : 'Starting position'}</dt><dd>${rental ? '10 players' : position.name}</dd></div></dl>
-        <div class="ticket-stub"><div><small class="stub-small">${ticket.code} · Demo ticket</small><b>See you on the pitch.</b></div><div class="barcode" aria-hidden="true"></div></div>
+        <div class="ticket-stub"><div><small class="stub-small">${ticket.code} · Demo ticket</small></div><div class="barcode" aria-hidden="true"></div></div>
       </article><div class="ticket-actions"><button id="back-lineup" class="button primary">${rental ? 'View field' : 'View lineup'}</button><button id="back-schedule" class="button secondary">Back to schedule</button></div>
       <p class="ticket-note">${canSave ? 'Saved in My tickets in this browser.' : 'Available in My tickets while this page is open.'} Demo booking · No payment.</p>`;
     booking.setAttribute('aria-labelledby','ticket-heading');
@@ -340,6 +343,8 @@
     $('back-lineup').addEventListener('click',() => {view.inspected=null;showLineup();});
     $('back-schedule').addEventListener('click',() => {
       closeBooking();
+      filters.reset();
+      dateFilter.value = s.date;
       changeMode(s.mode);
       $('play').scrollIntoView({behavior:reducedMotion()?'instant':'smooth'});
       focusWithoutScroll(document.querySelector(`[data-open="${s.id}"]`));
@@ -367,7 +372,7 @@
         <button class="text-button" data-ticket="${id}">Open ticket</button>
         <button class="text-button" data-release="${id}">Release booking</button></div><div class="release-slot"></div></li>`;
     }).join('');
-    showInfo(`<p class="eyebrow">Your matchdays</p><h2 id="info-title" tabindex="-1">My tickets.</h2>${ids.length ? `<ul class="saved-list">${list}</ul>` : '<p>Your bookings will appear here once you pick a spot or reserve a field.</p><button id="empty-find" class="button primary">Find a game</button>'}`, 'tickets', opener);
+    showInfo(`<h2 id="info-title" tabindex="-1">My tickets.</h2>${ids.length ? `<ul class="saved-list">${list}</ul>` : '<p>Your bookings will appear here once you pick a spot or reserve a field.</p><button id="empty-find" class="button primary">Find a game</button>'}`, 'tickets', opener);
     $('empty-find')?.addEventListener('click',() => {
       closeInfo(); changeMode('pickup'); $('play').scrollIntoView();
       focusWithoutScroll(document.querySelector('.mode-switch button'));
@@ -391,7 +396,6 @@
     if (!button) return;
     const d = button.dataset;
     if (d.mode) { changeMode(d.mode); closeNav(); }
-    if (d.day) changeDay(d.day);
     if (d.open) openSession(d.open,button,{source:button.closest('.session-card').querySelector('canvas')});
     if (d.room) showRoom(d.room);
     if (d.event) {
@@ -478,7 +482,6 @@
   document.querySelector('.site-header .brand').setAttribute('aria-label',brand+' home');
   const weekFormat = new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
   $('week-label').textContent = weekFormat.formatRange(dayDate(week[0]),dayDate(week[week.length-1]));
-  renderDays();
   renderCards();
   renderShop();
   showRoom('pitch');

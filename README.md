@@ -8,7 +8,7 @@ Extract the whole ZIP to a folder, then double-click **index.html** in Edge, Chr
 
 ## One-minute demo
 
-1. Select **Find a game**, then **Sun 29** and **View lineup** on Sunday Pickup.
+1. Select **Find a game**, then select November 29 in the date filter and **View lineup** on Sunday Pickup.
 2. Choose a shirt marked **+**. Select a second open shirt to see the ball pass between the positions. **Any open spot** also works.
 3. Enter a nickname if desired and confirm. Return to the lineup to see your shirt and the updated number of openings.
 4. Open **My tickets** to replay a ticket. **Release booking** restores its spot for another demonstration.
@@ -27,3 +27,5 @@ Tickets stay in this browser when local storage is available. If browser setting
 - **assets/** — bundled WebP concept photographs, club mark and local Roboto typefaces. The photos are AI-generated illustrations of the proposed venue and stock. The Roboto font license is in **assets/fonts/LICENSE.txt**.
 
 For a static host such as GitHub Pages, place index.html and its sibling files in the same publishing directory.
+
+Filter by date, earliest kickoff (Montréal time), listed age group and session level. Searches outside the sample schedule return no matches. Select a shirt to tilt the model and roll the ball to its feet. Occupied positions can be inspected. Reduced motion applies the final position immediately.

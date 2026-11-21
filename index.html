@@ -9,6 +9,7 @@
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script defer src="data.js"></script>
+  <script defer src="stadium.js"></script>
   <script defer src="pitch.js"></script>
   <script defer src="app.js"></script>
 </head>
@@ -46,7 +47,7 @@
         <div class="hero-copy">
           <p class="hero-location"><svg class="icon"><use href="#i-pin"/></svg> Montréal, Québec <span>/</span> Indoor soccer</p>
           <h1 id="hero-title"><span>Come solo.</span><span>Leave with</span><em>a team.</em></h1>
-          <p class="hero-deck">Five-a-side pickup, vintage kits and matchdays together. There’s a place for you on this pitch.</p>
+
           <div class="hero-actions"><a class="button primary" href="#play" data-mode="pickup">Find a game</a><a class="button hero-secondary" href="#play" data-mode="field">Book a field</a></div>
         </div>
         <button class="feature-pass" id="feature-pass" aria-label="Open the lineup for Sunday Pickup">
@@ -59,10 +60,16 @@
 
     <section class="section schedule wrap" id="play" aria-labelledby="schedule-title">
       <div class="section-heading schedule-heading">
-        <div><p class="eyebrow"><span id="week-label">Nov 23–29, 2026</span> <span class="slash">/</span> Montréal time</p><h2 id="schedule-title">This week on the pitch.</h2></div>
+        <div><p class="eyebrow"><span id="week-label">Nov 23–29, 2026</span> <span class="slash">/</span> Montréal time</p><h2 id="schedule-title">Find a game</h2></div>
         <div class="mode-switch" aria-label="Booking type"><button data-mode="pickup" aria-pressed="true">Open play</button><button data-mode="field" aria-pressed="false">Full field</button></div>
       </div>
-      <div class="day-bar" id="days" role="group" aria-label="Filter sessions by day"></div>
+      <form id="filters" class="filters" aria-label="Filter games">
+        <label>Date<input id="game-date" type="date"></label>
+        <label>Kickoff from<input id="game-time" type="time"></label>
+        <label>Age group<select id="game-age"><option value="">Any age group</option></select></label>
+        <label>Level<select id="game-level"><option value="">All levels</option></select></label>
+        <button type="reset" class="text-button">Reset</button>
+      </form>
       <div id="session-grid" class="session-grid"></div>
       <p class="sr-only" id="schedule-status" role="status"></p>
       <noscript><p>Enable JavaScript to explore the lineup and book a demo ticket.</p></noscript>
@@ -70,7 +77,7 @@
 
     <section class="events-section" id="events" aria-labelledby="events-title">
       <div class="section wrap">
-        <div class="section-heading"><div><p class="eyebrow">Community calendar</p><h2 id="events-title">What’s on at the club.</h2></div></div>
+        <div class="section-heading"><div><h2 id="events-title">What’s on</h2></div></div>
         <div class="event-grid">
           <article class="event-card screening-card">
             <img loading="lazy" src="assets/clubhouse.webp" alt="Friends in the clubhouse café watch a soccer match on a projected screen.">
@@ -85,13 +92,13 @@
     </section>
 
     <section class="section wrap" id="shop" aria-labelledby="shop-title">
-      <div class="section-heading"><div><p class="eyebrow">Club shop</p><h2 id="shop-title">On the rail.</h2></div><p class="section-note">Retro shirts and matchday essentials, right by the pitch.</p></div>
+      <div class="section-heading"><div><h2 id="shop-title">Club shop</h2></div></div>
       <div id="shop-grid" class="shop-grid"></div>
     </section>
 
     <section id="space" class="space-section" aria-labelledby="space-title">
       <div class="section wrap space-layout">
-        <div class="space-copy"><p class="eyebrow">The space</p><h2 id="space-title">Inside <span data-brand>Title</span>.</h2><p>From the touchline to the coffee counter, everything shares one roof. Select a room to explore the concept floor plan.</p><div id="room-description" aria-live="polite"></div></div>
+        <div class="space-copy"><h2 id="space-title">Inside <span data-brand>Title</span>.</h2><div id="room-description" aria-live="polite"></div></div>
         <div class="plan-paper">
           <div class="plan-top"><span>Club floor plan</span><span>Concept · not to scale</span></div>
           <div class="floor-plan" role="group" aria-label="Explore the four rooms">
@@ -106,19 +113,19 @@
     </section>
   </main>
 
-  <footer><div class="wrap footer-inner"><a class="brand" href="#top"><span class="brand-crest"><svg aria-hidden="true"><use href="#i-ball"/></svg></span><span data-brand>Title</span></a><p>Montréal, Québec · FFAR 256 student prototype<br>Sample sessions, prices and events. All bookings are simulations.</p><a class="footer-top" href="#top">Back to top</a></div></footer>
+  <footer><div class="wrap footer-inner"><a class="brand" href="#top"><span class="brand-crest"><svg aria-hidden="true"><use href="#i-ball"/></svg></span><span data-brand>Title</span></a><p>Montréal, Québec · FFAR 256 student prototype<br>Sample sessions, prices and events.</p><a class="footer-top" href="#top">Back to top</a></div></footer>
 
   <dialog id="booking-dialog" class="booking-dialog" aria-labelledby="booking-title">
     <div id="booking-frame" class="booking-frame">
-      <header class="booking-head"><div><p class="eyebrow" id="book-kicker"></p><h2 id="booking-title" tabindex="-1">Pick your spot.</h2></div><button class="icon-button dark-close" id="close-booking" aria-label="Close booking"><svg class="icon"><use href="#i-close"/></svg></button></header>
+      <header class="booking-head"><div><h2 id="booking-title" tabindex="-1">Pick your spot.</h2></div><button class="icon-button dark-close" id="close-booking" aria-label="Close booking"><svg class="icon"><use href="#i-close"/></svg></button></header>
       <div id="booking-scroll" class="booking-scroll">
         <div class="booking-grid">
           <div class="arena-block">
             <div class="arena-top"><span><svg class="icon"><use href="#i-field"/></svg> Pitch 01</span><span id="board-score" role="status"></span></div>
             <div class="field-scene" id="field-scene" role="group" aria-label="Interactive five-a-side field">
-              <canvas id="field-canvas" aria-hidden="true"></canvas>
+              <div class="pitch-plane"><canvas id="field-canvas" aria-hidden="true"></canvas>
               <div id="players"></div>
-              <div class="rolling-ball" id="rolling-ball" aria-hidden="true"><svg><use href="#i-ball"/></svg></div>
+              <div class="rolling-ball" id="rolling-ball" aria-hidden="true"><svg><use href="#i-ball"/></svg></div></div>
             </div>
             <div class="arena-bottom" id="arena-bottom"></div>
           </div>

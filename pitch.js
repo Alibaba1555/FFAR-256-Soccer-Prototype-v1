@@ -150,11 +150,18 @@
       this.layer=scene.querySelector('#players');
       this.ball=scene.querySelector('#rolling-ball');
       this.onSelect=onSelect;
+      this.plane=scene.querySelector('.pitch-plane');
+      this.frame=0;
+      this.resetMotion();
+      matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',() => {
+        if(this.session) this.update(this.selection,this.ticket,false,this.target);
+      });
       this.observer=new ResizeObserver(() => this.draw());
       this.observer.observe(scene);
     }
 
     load(session, ticket) {
+      this.resetMotion();
       this.session=session;
       this.ticket=ticket;
       this.selection=ticket?.spot ?? null;
@@ -202,36 +209,99 @@
 
     draw() {
       if (!this.session || !this.scene.clientWidth) return;
-      this.project=renderTurf(this.canvas,{vertical:matchMedia('(max-width:570px)').matches,rental:this.session.mode==='field'});
+      this.project=window.drawStadium(this.canvas,this.tiltX,this.tiltY);
       if (!this.project) return;
       this.buttons.forEach((btn,i) => {
         const [x,y]=this.project(spots[i].u,spots[i].v);
         btn.style.left=x+'px';btn.style.top=y+'px';
       });
-      this.moveBall(false);
+      this.paintBall();
     }
 
-    update(selection,ticket,animate=true) {
+    update(selection,ticket,animate=true,target=selection) {
       this.selection=selection;
+      this.target=target;
+      const spot=spots[target];
+      this.aimX=spot ? 2*spot.u-1 : 0;
+      this.aimY=spot ? 2*spot.v-1 : 0;
       this.ticket=ticket;
       this.paintPlayers();
       this.moveBall(animate);
     }
 
+    resetMotion() {
+      cancelAnimationFrame(this.frame);
+      this.frame=this.lastTime=0;
+      this.aimX=this.aimY=this.tiltX=this.tiltY=0;
+      this.target=null;
+      this.u=this.v=.5;
+      this.du=this.dv=this.spin=0;
+      this.plane.style.transform='';
+    }
+
+    destination() {
+      const spot=spots[this.target];
+      // Leave the shirt label clear. The orientation changes on narrow screens.
+      const portrait=matchMedia('(max-width:570px)').matches;
+      return spot ? [spot.u+(portrait ? -.045 : 0),spot.v+(portrait?0:.085)] : [.5,.5];
+    }
+
     moveBall(animate) {
       if (!this.project || this.ball.hidden) return;
-      const spot=spots[this.selection];
-      const [x,y]=spot ? this.project(spot.u,spot.v) : this.project(.5,.5);
-      const moving=animate&&!reducedMotion();
-      this.ball.style.transition=moving?'left .47s cubic-bezier(.23,.76,.28,1), top .47s cubic-bezier(.23,.76,.28,1)':'none';
-      this.ball.style.left=(x+(spot?19:0))+'px';
-      this.ball.style.top=(y+(spot?5:0))+'px';
-      const face=this.ball.firstElementChild;
-      face.getAnimations().forEach(a=>a.cancel());
-      if (moving) face.animate([
-        {transform:'translateY(0) rotate(0)'},{transform:'translateY(-8px) rotate(145deg)',offset:.46},{transform:'translateY(0) rotate(280deg)'}
-      ],{duration:470,easing:'ease-out'});
+      if (!animate || reducedMotion()) {
+        [this.u,this.v]=this.destination();
+        this.du=this.dv=0;
+        this.tiltX=this.aimX;this.tiltY=this.aimY;
+        this.draw();
+      } else this.startMotion();
     }
+
+    paintBall() {
+      if (!this.project || this.ball.hidden) return;
+      const [x,y]=this.project(this.u,this.v);
+      this.ball.style.left=x+'px';
+      this.ball.style.top=y+'px';
+      this.ball.firstElementChild.style.transform='rotate('+this.spin+'deg)';
+    }
+
+    startMotion() {
+      if (this.frame || !this.project || reducedMotion()) return;
+      this.lastTime=performance.now();
+      this.frame=requestAnimationFrame(time => this.step(time));
+    }
+
+    step(time) {
+      this.frame=0;
+      if (!this.scene.clientWidth || reducedMotion()) return;
+      const dt=Math.min(.032,(time-this.lastTime)/1000);
+      this.lastTime=time;
+      const ease=1-Math.exp(-10*dt);
+      this.tiltX+=(this.aimX-this.tiltX)*ease;
+      this.tiltY+=(this.aimY-this.tiltY)*ease;
+      let moving=false;
+      if (!this.ball.hidden) {
+        const [targetU,targetV]=this.destination();
+        const selected=this.target!=null;
+        this.du+=((targetU-this.u)*55-13*this.du)*dt;
+        this.dv+=((targetV-this.v)*55-13*this.dv)*dt;
+        const oldU=this.u, oldV=this.v;
+        this.u+=this.du*dt;
+        this.v+=this.dv*dt;
+        if(this.u<.025 || this.u>.975){this.u=Math.max(.025,Math.min(.975,this.u));this.du*=-.36;}
+        if(this.v<.035 || this.v>.965){this.v=Math.max(.035,Math.min(.965,this.v));this.dv*=-.36;}
+        const [oldX,oldY]=this.project(oldU,oldV);
+        const [x,y]=this.project(this.u,this.v);
+        this.spin+=Math.hypot(x-oldX,y-oldY)*6*Math.sign(Math.abs(x-oldX)>Math.abs(y-oldY)?x-oldX:y-oldY);
+        moving=Math.abs(this.du)+Math.abs(this.dv)>.0008;
+        if(selected && !moving && Math.hypot(this.u-targetU,this.v-targetV)<.001){
+          this.u=targetU;this.v=targetV;this.du=this.dv=0;
+        } else if(selected) moving=true;
+      }
+      this.draw();
+      if(moving || Math.abs(this.aimX-this.tiltX)+Math.abs(this.aimY-this.tiltY)>.002)
+        this.frame=requestAnimationFrame(next => this.step(next));
+    }
+
   }
   window.ClubPitch={spots,Lineup,renderTurf,reducedMotion};
 })();
