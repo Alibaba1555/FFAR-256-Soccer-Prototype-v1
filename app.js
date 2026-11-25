@@ -380,9 +380,9 @@
   }
 
   function renderShop() {
-    $('shop-grid').innerHTML = products.map(p => `<button class="product-card" data-product="${p.id}" aria-label="View ${p.name}, ${p.price} Canadian dollars">
+    $('shop-grid').innerHTML = products.filter(p => !p.hidden).map(p => `<button class="product-card" data-product="${p.id}" aria-label="View ${p.name}${p.price == null ? "" : ", "+p.price+" Canadian dollars"}">
       <div class="product-img"><img loading="lazy" src="assets/${p.image}" alt="${p.alt}"></div>
-      <div class="product-info"><strong>${p.name}</strong><span>$${p.price} CAD</span></div><small>${p.category}</small></button>`).join('');
+      <div class="product-info"><strong>${p.name}</strong>${p.price == null ? "" : "<span>$"+p.price+" CAD</span>"}</div><small>${p.category}</small></button>`).join('');
   }
 
   function showRoom(id) {
@@ -406,7 +406,13 @@
     if (d.product) {
       const p = products.find(item => item.id===d.product);
       showInfo(`<p class="eyebrow">Club shop / ${p.category}</p><h2 id="info-title" tabindex="-1">${p.name}</h2>
-        <img class="info-image" src="assets/${p.image}" alt="${p.alt}"><div class="detail-specs"><b>$${p.price} CAD</b><span>${p.specs}</span></div><p>${p.description}</p>`, 'product', button);
+        <img class="info-image" src="assets/${p.image}" alt="${p.alt}"><div class="detail-specs">${p.price == null ? "" : "<b>$"+p.price+" CAD</b>"}<span>${p.specs}</span></div><p>${p.description}</p>
+        <button type="button" class="button primary" id="buy-product">Buy</button>`, 'product', button);
+      $('buy-product').addEventListener('click', event => {
+        event.currentTarget.textContent = 'Demo purchase complete';
+        event.currentTarget.disabled = true;
+        $('notice').textContent = 'Demo purchase complete for ' + p.name;
+      });
     }
     if (d.ticket) openSession(d.ticket,$('my-tickets'));
     if (d.release) {

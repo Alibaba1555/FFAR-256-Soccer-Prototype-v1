@@ -378,3 +378,6 @@ dialog::backdrop{background:rgba(6,20,14,.76);backdrop-filter:blur(5px)}
 .field-scene .rolling-ball{z-index:6}
 @media(max-width:570px){.filters{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.filters button{justify-self:start}}
 .team-legend{display:grid;gap:.3rem}.team-legend strong{font:inherit;opacity:.85}
+
+.product-img img[src*="/kits/"]{object-fit:contain;padding:.65rem;background:#fff;box-sizing:border-box}
+.info-image[src*="/kits/"]{object-fit:contain;height:min(42vh,360px);background:#fff}
