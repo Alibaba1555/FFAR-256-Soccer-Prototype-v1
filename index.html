@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102f24">
+  <meta name="theme-color" content="#710516">
   <meta name="description" content="Pick a spot at a Montréal indoor soccer club. A student prototype for pickup games, field rentals and matchday gatherings.">
   <title>Fut de l'ile — Indoor soccer in Montréal</title>
-  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/club-logo.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <script defer src="data.js"></script>
   <script defer src="stadium.js"></script>
@@ -28,7 +28,7 @@
   <a class="skip-link" href="#play">Skip to games</a>
   <header class="site-header" id="top">
     <div class="nav-inner wrap">
-      <a class="brand" href="#top" aria-label="Fut de l'ile home"><span class="brand-crest"><svg aria-hidden="true"><use href="#i-ball"/></svg></span><span data-brand>Fut de l'ile</span></a>
+      <a class="brand" href="#top" aria-label="Fut de l'ile home"><img class="club-logo" src="assets/club-logo.png" alt=""><span data-brand>Fut de l'ile</span></a>
       <nav id="main-nav" class="main-nav" aria-label="Main navigation">
         <a href="#play" data-nav="play">Play</a><a href="#events">What’s on</a><a href="#shop">Club shop</a><a href="#space">The space</a>
       </nav>
@@ -80,8 +80,8 @@
         <div class="section-heading"><div><h2 id="events-title">What’s on</h2></div></div>
         <div class="event-grid">
           <article class="event-card screening-card">
-            <img loading="lazy" src="assets/clubhouse.webp" alt="Friends in the clubhouse café watch a soccer match on a projected screen.">
-            <div class="event-copy"><p class="eyebrow">Sat, Nov 28 <span>/</span> Screening room</p><h3>Matchday watch party</h3><button class="text-button light" data-event="screening">Event details</button></div>
+            <img loading="lazy" src="assets/clubhouse.webp" alt="Fans watch a soccer match projected on the wall.">
+            <div class="event-copy"><p class="eyebrow">Sat, Nov 28 <span>/</span> Pitch-side seating area</p><h3>Matchday watch party</h3><button class="text-button light" data-event="screening">Event details</button></div>
           </article>
           <article class="event-card cup-card">
             <div class="cup-graphic" aria-hidden="true"><div class="cup-outline"></div><div class="cup-outline"></div><div class="cup-outline"></div></div>
@@ -101,19 +101,14 @@
         <div class="space-copy"><h2 id="space-title">Inside <span data-brand>Fut de l'ile</span>.</h2><div id="room-description" aria-live="polite"></div></div>
         <div class="plan-paper">
           <div class="plan-top"><span>Club floor plan</span><span>Concept · not to scale</span></div>
-          <div class="floor-plan" role="group" aria-label="Explore the four rooms">
-            <button class="room room-pitch" data-room="pitch" aria-pressed="true"><span class="plan-pitch-lines" aria-hidden="true"></span><b>Pitch 01</b></button>
-            <button class="room room-shop" data-room="shop" aria-pressed="false">Club shop</button>
-            <button class="room room-cafe" data-room="cafe" aria-pressed="false">Café</button>
-            <button class="room room-screen" data-room="screen" aria-pressed="false">Screening room</button>
-          </div>
-          <div class="plan-bottom"><span class="entrance-line"></span>Entrance</div>
+          <div class="venue-plan" role="group" aria-label="Interactive club floor plan"><button type="button" class="zone pitch" data-room="pitch" aria-pressed="true"><span>5-a-side court 1</span></button><button type="button" class="zone court2" data-room="court2" aria-pressed="false"><span>5-a-side court 2</span></button><button type="button" class="zone locker1" data-room="locker1" aria-pressed="false"><span>Locker room 1</span></button><button type="button" class="zone locker2" data-room="locker2" aria-pressed="false"><span>Locker room 2</span></button><button type="button" class="zone shop" data-room="shop" aria-pressed="false"><span>Shop</span></button><button type="button" class="zone field11" data-room="field11" aria-pressed="false"><span>11-a-side field</span></button><button type="button" class="zone screen" data-room="screen" aria-pressed="false"><span>Seating / live projector</span></button><span class="entry">Entrance</span></div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer><div class="wrap footer-inner"><a class="brand" href="#top"><span class="brand-crest"><svg aria-hidden="true"><use href="#i-ball"/></svg></span><span data-brand>Fut de l'ile</span></a><p>Montréal, Québec · FFAR 256 student prototype<br>Sample sessions, prices and events.</p><a class="footer-top" href="#top">Back to top</a></div></footer>
+  <footer><div class="wrap footer-inner"><a class="brand" href="#top"><img class="club-logo" src="assets/club-logo.png" alt=""><span data-brand>Fut de l'ile</span></a><section><h3>Contact</h3><address><a href="mailto:futdelile@gmail.com">futdelile@gmail.com</a><br><a href="tel:+14382371627">438-237-1627</a></address></section>
+<section><h3>Opening hours</h3><dl class="hours"><dt>Mon–Thu</dt><dd>3:30 pm–10:00 pm</dd><dt>Friday</dt><dd>2:30 pm–11:30 pm</dd><dt>Saturday</dt><dd>8:30 am–11:30 pm</dd><dt>Sunday</dt><dd>8:30 am–10:00 pm</dd></dl></section><p>Montréal, Québec · FFAR 256 student prototype<br><a class="button primary" style="margin-top:.65rem" href="assets/Fut-de-lile-project-overview.pdf" download>Download project overview (PDF)</a></p><a class="footer-top" href="#top">Back to top</a></div></footer>
 
   <dialog id="booking-dialog" class="booking-dialog" aria-labelledby="booking-title">
     <div id="booking-frame" class="booking-frame">

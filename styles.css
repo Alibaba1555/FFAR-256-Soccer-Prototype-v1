@@ -381,3 +381,33 @@ dialog::backdrop{background:rgba(6,20,14,.76);backdrop-filter:blur(5px)}
 
 .product-img img[src*="/kits/"]{object-fit:contain;padding:.65rem;background:#fff;box-sizing:border-box}
 .info-image[src*="/kits/"]{object-fit:contain;height:min(42vh,360px);background:#fff}
+
+/* Club identity and architectural plan */
+:root{--paper:#fcdee1;--card:#fff4ef;--ink:#380913;--green:#730617;--deep:#620416;--accent:#f6a09f;--line:#d3a4a8;--muted:#72464b;--light:#fff2eb}
+.club-logo{width:52px;height:50px;object-fit:contain;flex:none}
+.brand{color:var(--green);font-style:normal;letter-spacing:-.055em}
+.hero-shade{background:linear-gradient(90deg,#580410f2,#5d06139c 48%,#33020c22)}
+h1,h2,.footer-inner h3{font-family:Roboto,Arial,sans-serif;text-transform:uppercase;font-weight:700;font-style:normal;letter-spacing:.012em}
+h1 em{color:#ffdae0;font-style:normal}
+.hero-actions{margin-top:1.2rem}
+.primary,.tickets-link{background:#800b20;color:white}.primary:hover:not(:disabled),.tickets-link:hover{background:#a4162e}
+.events-section{background:#f6cbd0}.cup-card{background:#f1a7ae;color:#650519}
+.plan-paper{background:#fff5ee;color:#690818}
+.venue-plan{position:relative;aspect-ratio:4/5;width:min(100%,440px);margin:16px auto 0;background:linear-gradient(#89142b12 1px,transparent 1px),linear-gradient(90deg,#89142b12 1px,transparent 1px);background-size:12px 12px}
+.venue-plan:before{content:"";position:absolute;inset:0 0 9% 0;border:2px solid #771528}
+.zone,.entry{position:absolute;border:1.5px solid #771528;background:#ffe7e8;text-align:center;padding:3px;font:700 clamp(.76rem,1.3vw,1rem)/1.15 Roboto,sans-serif;color:#63091c}
+.zone:hover,.zone[aria-pressed=true]{background:#800d25;color:white}.zone:focus-visible{z-index:2}
+.zone.pitch,.zone.court2{left:1.5%;width:30%;height:13%}.zone.pitch{top:2%}.zone.court2{top:16%}
+.zone.locker1,.zone.locker2{left:17%;width:16%;height:16%}.zone.locker1{top:30%}.zone.locker2{top:46%}
+.zone.shop{left:0;top:62%;height:29%;width:33%}.entry{top:91%;left:4%;width:29%;padding:.4em}
+.zone.field11{left:46%;top:8%;width:44%;height:63%;background-image:linear-gradient(transparent 49.8%,currentColor 50%,transparent 50.4%),radial-gradient(circle at center,transparent 15%,currentColor 15.5%,transparent 16.2%)}
+.field11:before,.field11:after{content:"";position:absolute;left:23%;width:54%;height:14%;border:1px solid currentColor}.field11:before{top:0}.field11:after{bottom:0}.field11 span{position:relative;top:-24%}
+.zone.screen{left:34%;width:65%;height:15%;top:75%;background-color:transparent}.zone.screen:hover,.zone.screen[aria-pressed=true]{background:#800d25}
+.footer-inner{display:grid;grid-template-columns:1fr 1fr 1.1fr;align-items:start;gap:1.5rem;padding-block:2.5rem}
+.footer-inner h3{font-size:1.4rem;margin-bottom:.55rem}.footer-inner address{font-style:normal;line-height:1.8}.hours{display:grid;grid-template-columns:max-content auto;gap:.25rem 1.2rem}.footer-inner p{grid-column:1/3;order:0}
+.match-banner{background:#861329!important}.filters input,.filters select{background:#fff6f3;border-color:#b58991;color:#4b1320}
+@media(max-width:760px){.footer-inner{grid-template-columns:1fr 1fr}.footer-inner .brand,.footer-inner p{grid-column:1/-1}.brand .club-logo{width:38px;height:38px}}
+@media(max-width:520px){.footer-inner{grid-template-columns:1fr}.zone.locker1,.zone.locker2{font-size:.71rem}}
+
+#space-title{line-height:1.06;letter-spacing:.005em;color:#fff4ed}
+.footer-inner h3{letter-spacing:.035em;line-height:1.2;color:#600918}

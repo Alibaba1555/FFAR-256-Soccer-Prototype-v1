@@ -406,7 +406,7 @@
     if (d.product) {
       const p = products.find(item => item.id===d.product);
       showInfo(`<p class="eyebrow">Club shop / ${p.category}</p><h2 id="info-title" tabindex="-1">${p.name}</h2>
-        <img class="info-image" src="assets/${p.image}" alt="${p.alt}"><div class="detail-specs">${p.price == null ? "" : "<b>$"+p.price+" CAD</b>"}<span>${p.specs}</span></div><p>${p.description}</p>
+        <img class="info-image" src="assets/${p.image}" alt="${p.alt}"><div class="detail-specs">${p.price == null ? "" : "<b>$"+p.price+" CAD</b>"}<span>${p.specs}</span></div><p>${p.description}</p><p><small>Comparable price · <a href="${p.priceUrl}" target="_blank" rel="noopener noreferrer">${p.priceReference}</a></small></p>
         <button type="button" class="button primary" id="buy-product">Buy</button>`, 'product', button);
       $('buy-product').addEventListener('click', event => {
         event.currentTarget.textContent = 'Demo purchase complete';
